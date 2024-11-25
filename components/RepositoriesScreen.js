@@ -24,6 +24,7 @@ const RepositoriesScreen = ({ route }) => {
         console.error(error);
       } finally {
         setLoading(false);
+        console.log(repos);
       }
     };
 
