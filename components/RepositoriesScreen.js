@@ -13,22 +13,22 @@ const RepositoriesScreen = ({ route }) => {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const fetchRepositories = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://api.github.com/search/repositories?q=language:${language}&sort=stars&order=desc`
-  //       );
-  //       setRepos(response.data.items);
-  //     } catch (error) {
-  //       console.error(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchRepositories = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.github.com/search/repositories?q=language:${language}&sort=stars&order=desc`
+        );
+        setRepos(response.data.items);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchRepositories();
-  // }, [language, timeInterval]);
+    fetchRepositories();
+  }, [language, timeInterval]);
 
   return (
     <View style={styles.container}>
