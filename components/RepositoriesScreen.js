@@ -5,10 +5,11 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import axios from "axios";
 
-const RepositoriesScreen = ({ route }) => {
+const RepositoriesScreen = ({ route, navigation }) => {
   const { language, timeInterval } = route.params;
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,17 +20,27 @@ const RepositoriesScreen = ({ route }) => {
         const response = await axios.get(
           `https://api.github.com/search/repositories?q=language:${language}&sort=stars&order=desc`
         );
+        // const allRepos = response.data.items;
+        // const filteredRepos = filterByTimeInterval(
+        //   allRepos,
+        //   timeInterval,
+        //   "updated_at"
+        // );
+        // setRepos(filteredRepos);
         setRepos(response.data.items);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
-        console.log(repos);
       }
     };
 
     fetchRepositories();
   }, [language, timeInterval]);
+
+  const navigateToDetails = (repo) => {
+    navigation.navigate("RepositoryDetails", { repo });
+  };
 
   return (
     <View style={styles.container}>
@@ -40,13 +51,15 @@ const RepositoriesScreen = ({ route }) => {
           data={repos}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.item}>
+            <TouchableOpacity
+              onPress={() => navigateToDetails(item)}
+              style={styles.item}
+            >
               <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.subtitle}>
                 Stars: {item.stargazers_count}
               </Text>
-              <Text style={styles.subtitle}>Updated: {item.updated_at}</Text>
-            </View>
+            </TouchableOpacity>
           )}
         />
       )}
@@ -62,3 +75,37 @@ const styles = StyleSheet.create({
 });
 
 export default RepositoriesScreen;
+
+// const getIntervalStartDate = (timeInterval) => {
+//   const now = new Date();
+//   const intervalStart = new Date();
+//   switch (timeInterval) {
+//     case "Daily":
+//       intervalStart.setDate(now.getDate() - 1); // 1 day ago
+//       break;
+//     case "Weekly":
+//       intervalStart.setDate(now.getDate() - 7); // 7 days ago
+//       break;
+//     case "Monthly":
+//       intervalStart.setMonth(now.getMonth() - 1); // 1 month ago
+//       break;
+//     default:
+//       throw new Error("Invalid timeInterval value"); // Handle unexpected values
+//   }
+//   return intervalStart;
+// };
+
+// // Function to filter repositories by time interval
+// const filterByTimeInterval = (
+//   repositories,
+//   timeInterval,
+//   filterBy = "updated_at"
+// ) => {
+//   const now = new Date();
+//   const intervalStart = getIntervalStartDate(timeInterval);
+
+//   return repositories.filter((repo) => {
+//     const date = new Date(repo[filterBy]);
+//     return date >= intervalStart && date <= now; // Include repositories within the interval
+//   });
+// };
