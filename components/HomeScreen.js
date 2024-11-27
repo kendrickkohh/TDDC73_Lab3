@@ -1,33 +1,92 @@
 import React, { useState } from "react";
 import { View, TextInput, Text, Button, StyleSheet } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
 
 const HomeScreen = ({ navigation }) => {
   const [language, setLanguage] = useState("");
-  const [timeInterval, setTimeInterval] = useState(""); // default
+  const [timeInterval, setTimeInterval] = useState("");
+  const [isLanguageFocus, setIsLanguageFocus] = useState(false);
+  const [isTimeFocus, setIsTimeFocus] = useState(false);
 
   const navigateToRepositories = () => {
     navigation.navigate("Repositories", { language, timeInterval });
   };
 
+  const languagesData = [
+    { label: "JavaScript", value: "JavaScript" },
+    { label: "Python", value: "Python" },
+    { label: "Java", value: "Java" },
+    { label: "C", value: "C" },
+    { label: "C++", value: "C++" },
+    { label: "Ruby", value: "Ruby" },
+    { label: "Go", value: "Go" },
+    { label: "PHP", value: "PHP" },
+    { label: "TypeScript", value: "TypeScript" },
+    { label: "Swift", value: "Swift" },
+    { label: "Rust", value: "Rust" },
+    { label: "Kotlin", value: "Kotlin" },
+    { label: "R", value: "R" },
+    { label: "Shell", value: "Shell" },
+    { label: "HTML", value: "HTML" },
+    { label: "CSS", value: "CSS" },
+    { label: "C#", value: "C#" },
+    { label: "Objective-C", value: "Objective-C" },
+    { label: "Dart", value: "Dart" },
+    { label: "Scala", value: "Scala" },
+    { label: "Elixir", value: "Elixir" },
+    { label: "Haskell", value: "Haskell" },
+    { label: "Lua", value: "Lua" },
+    { label: "Perl", value: "Perl" },
+    { label: "Julia", value: "Julia" },
+    { label: "VHDL", value: "VHDL" },
+    { label: "Assembly Language", value: "Assembly Language" },
+    { label: "F#", value: "F#" },
+    { label: "MATLAB", value: "MATLAB" },
+    { label: "GraphQL", value: "GraphQL" },
+  ];
+
+  const timeData = [
+    { label: "Daily", value: "Daily" },
+    { label: "Weekly", value: "Weekly" },
+    { label: "Monthly", value: "Monthly" },
+  ];
+
   return (
     <View style={styles.container}>
-      <Text style={styles.languageList}>
-        Programming languages: JavaScript, Python, Java, C, C++, Ruby, Go, PHP,
-        TypeScript, Swift, Rust, Kotlin, R, Shell, HTML, CSS, C#, Objective-C,
-        Dart, Scala, Elixir, Haskell, Lua, Perl, Julia, VHDL, Assembly Language,
-        F#, MATLAB, GraphQL.
-      </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter programming language"
+      <Text style={styles.header}>TDDC73 Lab 3</Text>
+      <Dropdown
+        style={[styles.dropdown, isLanguageFocus && { borderColor: "blue" }]}
+        data={languagesData}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isLanguageFocus ? "Select programming language" : "..."}
+        searchPlaceholder="Search..."
         value={language}
-        onChangeText={setLanguage}
+        onFocus={() => setIsLanguageFocus(true)}
+        onBlur={() => setIsLanguageFocus(false)}
+        onChange={(item) => {
+          setLanguage(item.value);
+          setIsLanguageFocus(false);
+        }}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter time interval (daily/weekly/monthly)"
+
+      <Dropdown
+        style={[styles.dropdown, isTimeFocus && { borderColor: "blue" }]}
+        data={timeData}
+        search
+        labelField="label"
+        valueField="value"
+        placeholder={!isTimeFocus ? "Select time interval" : "..."}
+        searchPlaceholder="Search..."
         value={timeInterval}
-        onChangeText={setTimeInterval}
+        onFocus={() => setIsTimeFocus(true)}
+        onBlur={() => setIsTimeFocus(false)}
+        onChange={(item) => {
+          setTimeInterval(item.value);
+          setIsTimeFocus(false);
+        }}
       />
       <Button title="Find Repositories" onPress={navigateToRepositories} />
     </View>
@@ -36,7 +95,13 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", padding: 20 },
-  input: { borderBottomWidth: 1, marginBottom: 20, padding: 10 },
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 20,
+    color: "#333",
+  },
   languageList: {
     fontSize: 14,
     color: "#555",
@@ -47,6 +112,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     backgroundColor: "#f5f5f5",
+  },
+  dropdown: {
+    height: 50,
+    borderColor: "gray",
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    margin: 8,
   },
 });
 

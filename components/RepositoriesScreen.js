@@ -8,25 +8,45 @@ import {
   TouchableOpacity,
 } from "react-native";
 import axios from "axios";
+import { format } from "date-fns";
 
 const RepositoriesScreen = ({ route, navigation }) => {
   const { language, timeInterval } = route.params;
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
-  // encodeURIComponent
+
   useEffect(() => {
     const fetchRepositories = async () => {
+      const currentDate = new Date();
+      let formattedDate;
+
+      // Calculate the date based on the selected timeInterval
+      switch (timeInterval) {
+        case "Daily":
+          formattedDate = format(
+            currentDate.setDate(currentDate.getDate() - 1),
+            "yyyy-MM-dd"
+          );
+
+          break;
+        case "Weekly":
+          formattedDate = format(
+            currentDate.setDate(currentDate.getDate() - 7),
+            "yyyy-MM-dd"
+          );
+          break;
+        case "Monthly":
+          formattedDate = format(
+            currentDate.setMonth(currentDate.getMonth() - 1),
+            "yyyy-MM-dd"
+          );
+          break;
+      }
       try {
+        const encodedLanguage = encodeURIComponent(language);
         const response = await axios.get(
-          `https://api.github.com/search/repositories?q=language:${language}&sort=stars&order=desc`
+          `https://api.github.com/search/repositories?q=language:${encodedLanguage}+pushed:>${formattedDate}&sort=stars&order=desc`
         );
-        // const allRepos = response.data.items;
-        // const filteredRepos = filterByTimeInterval(
-        //   allRepos,
-        //   timeInterval,
-        //   "updated_at"
-        // );
-        // setRepos(filteredRepos);
         setRepos(response.data.items);
       } catch (error) {
         console.error(error);
@@ -41,40 +61,6 @@ const RepositoriesScreen = ({ route, navigation }) => {
   const navigateToDetails = (repo) => {
     navigation.navigate("RepositoryDetails", { repo });
   };
-
-  // const getIntervalStartDate = (timeInterval) => {
-  //   const now = new Date();
-  //   const intervalStart = new Date();
-  //   switch (timeInterval) {
-  //     case "Daily":
-  //       intervalStart.setDate(now.getDate() - 1); // 1 day ago
-  //       break;
-  //     case "Weekly":
-  //       intervalStart.setDate(now.getDate() - 7); // 7 days ago
-  //       break;
-  //     case "Monthly":
-  //       intervalStart.setMonth(now.getMonth() - 1); // 1 month ago
-  //       break;
-  //     default:
-  //       throw new Error("Invalid timeInterval value"); // Handle unexpected values
-  //   }
-  //   return intervalStart;
-  // };
-
-  // Function to filter repositories by time interval
-  // const filterByTimeInterval = (
-  //   repositories,
-  //   timeInterval,
-  //   filterBy = "updated_at"
-  // ) => {
-  //   const now = new Date();
-  //   const intervalStart = getIntervalStartDate(timeInterval);
-
-  //   return repositories.filter((repo) => {
-  //     const date = new Date(repo[filterBy]);
-  //     return date >= intervalStart && date <= now; // Include repositories within the interval
-  //   });
-  // };
 
   return (
     <View style={styles.container}>
