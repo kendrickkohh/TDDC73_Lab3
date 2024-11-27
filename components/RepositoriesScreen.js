@@ -13,7 +13,7 @@ const RepositoriesScreen = ({ route, navigation }) => {
   const { language, timeInterval } = route.params;
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  // encodeURIComponent
   useEffect(() => {
     const fetchRepositories = async () => {
       try {
@@ -41,6 +41,40 @@ const RepositoriesScreen = ({ route, navigation }) => {
   const navigateToDetails = (repo) => {
     navigation.navigate("RepositoryDetails", { repo });
   };
+
+  // const getIntervalStartDate = (timeInterval) => {
+  //   const now = new Date();
+  //   const intervalStart = new Date();
+  //   switch (timeInterval) {
+  //     case "Daily":
+  //       intervalStart.setDate(now.getDate() - 1); // 1 day ago
+  //       break;
+  //     case "Weekly":
+  //       intervalStart.setDate(now.getDate() - 7); // 7 days ago
+  //       break;
+  //     case "Monthly":
+  //       intervalStart.setMonth(now.getMonth() - 1); // 1 month ago
+  //       break;
+  //     default:
+  //       throw new Error("Invalid timeInterval value"); // Handle unexpected values
+  //   }
+  //   return intervalStart;
+  // };
+
+  // Function to filter repositories by time interval
+  // const filterByTimeInterval = (
+  //   repositories,
+  //   timeInterval,
+  //   filterBy = "updated_at"
+  // ) => {
+  //   const now = new Date();
+  //   const intervalStart = getIntervalStartDate(timeInterval);
+
+  //   return repositories.filter((repo) => {
+  //     const date = new Date(repo[filterBy]);
+  //     return date >= intervalStart && date <= now; // Include repositories within the interval
+  //   });
+  // };
 
   return (
     <View style={styles.container}>
@@ -75,37 +109,3 @@ const styles = StyleSheet.create({
 });
 
 export default RepositoriesScreen;
-
-// const getIntervalStartDate = (timeInterval) => {
-//   const now = new Date();
-//   const intervalStart = new Date();
-//   switch (timeInterval) {
-//     case "Daily":
-//       intervalStart.setDate(now.getDate() - 1); // 1 day ago
-//       break;
-//     case "Weekly":
-//       intervalStart.setDate(now.getDate() - 7); // 7 days ago
-//       break;
-//     case "Monthly":
-//       intervalStart.setMonth(now.getMonth() - 1); // 1 month ago
-//       break;
-//     default:
-//       throw new Error("Invalid timeInterval value"); // Handle unexpected values
-//   }
-//   return intervalStart;
-// };
-
-// // Function to filter repositories by time interval
-// const filterByTimeInterval = (
-//   repositories,
-//   timeInterval,
-//   filterBy = "updated_at"
-// ) => {
-//   const now = new Date();
-//   const intervalStart = getIntervalStartDate(timeInterval);
-
-//   return repositories.filter((repo) => {
-//     const date = new Date(repo[filterBy]);
-//     return date >= intervalStart && date <= now; // Include repositories within the interval
-//   });
-// };

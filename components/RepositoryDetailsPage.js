@@ -17,7 +17,6 @@ const RepositoryDetailsScreen = ({ route }) => {
         const branchesResponse = await axios.get(
           `https://api.github.com/repos/${repo.owner.login}/${repo.name}/branches`
         );
-        console.log(branchesResponse);
         setCommitsCount(commitsResponse.data.length); // Count of commits
         setBranchesCount(branchesResponse.data.length); // Count of branches
       } catch (error) {
